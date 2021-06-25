@@ -21,7 +21,7 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-    console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
+    //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
     
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
