@@ -1,2 +1,2 @@
-# AbeBot
-A discord bot meant for my community, with multiple fun features taking advantage of public APIs.
+# About
+A discord bot built for Abyeon's community.
