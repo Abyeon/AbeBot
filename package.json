@@ -1,0 +1,28 @@
+{
+  "name": "abebot",
+  "version": "1.0.0",
+  "description": "A discord bot built for Abyeon's community.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abyeon/AbeBot.git"
+  },
+  "keywords": [
+    "discord-js",
+    "discord",
+    "bot"
+  ],
+  "author": "Porter Seals",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abyeon/AbeBot/issues"
+  },
+  "homepage": "https://github.com/Abyeon/AbeBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "node-fetch": "^2.6.1"
+  }
+}
