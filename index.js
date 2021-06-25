@@ -33,8 +33,16 @@ client.on('message', message => {
     if (!command) return; // If the command does not exist, return.
 
     // Check if in DMs
-    if (command.guildOnly && message.channel.type === 'dm') {
+    if ((command.guildOnly || command.permissions) && message.channel.type === 'dm') {
         return message.reply('Cant execute this command inside DMs!');
+    }
+
+    // Check if user has permission to use command
+    if (command.permissions) {
+        const authorPerms = message.channel.permissionsFor(message.author);
+        if (!authorPerms || !authorPerms.has(command.permissions)) {
+            return;
+        }
     }
 
     // Check if there are args if required
