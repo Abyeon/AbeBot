@@ -4,7 +4,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     permissions: 'KICK_MEMBERS',
-    usage: '[user] [reason..]',
+    usage: '[user] (reason..)',
 
     execute (message, args) {
         let user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0]);

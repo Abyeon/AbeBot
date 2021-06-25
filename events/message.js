@@ -1,11 +1,11 @@
 const Discord = require('discord.js');
-const { prefix, token } = require('../config.json');
+const { prefix, token, owner } = require('../config.json');
 
 module.exports = {
     name: 'message',
     execute(message, client) {
         //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
-    
+
         if (!message.content.startsWith(prefix) || message.author.bot) return;
 
         const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -14,6 +14,11 @@ module.exports = {
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) return; // If the command does not exist, return.
+
+        // If command is debug and message author is not the owner, return.
+        if (command.debug) {
+            if (message.author.id != owner) return;
+        }
 
         // Check if in DMs
         if ((command.guildOnly || command.permissions) && message.channel.type === 'dm') {

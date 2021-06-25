@@ -5,7 +5,7 @@ module.exports = {
     description: 'Reloads a command',
     args: true,
     guildOnly: true,
-    permissions: 'MANAGE_GUILD',
+    debug: true,
 
     execute (message, args) {
         const commandName = args[0].toLowerCase();
