@@ -8,7 +8,7 @@ module.exports = {
     name: 'freegames',
     description: 'Responds with a list of current free games',
     aliases: ['free'],
-    cooldown: 10,
+    cooldown: 5,
     
     execute (message, args) {
         let list = "";
