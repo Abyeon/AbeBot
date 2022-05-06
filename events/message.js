@@ -8,11 +8,14 @@ module.exports = {
         const settings = require('../settings.json');
         let serverPrefix = prefix;
 
-        settings.guilds.forEach((g) => {
-            if (!message.author.bot && g.id == message.channel.guild.id) {
-                serverPrefix = g.prefix;
-            }
-        });
+        // Check to see if in DM, if not, then use default prefix (do nothing)
+        if (message.channel.type !== "dm") {
+            settings.guilds.forEach((g) => {
+                if (!message.author.bot && g.id == message.channel.guild.id) {
+                    serverPrefix = g.prefix;
+                }
+            });
+        }        
 
         if (!message.content.startsWith(serverPrefix) || message.author.bot) return;
 
