@@ -45,7 +45,7 @@ module.exports = {
                 type: "STREAMING",
                 url: "https://github.com/Abyeon/AbeBot"
             }
-        }).then(presence => console.log(`Activity set to ${presence.activities[0].type}: ${presence.activities[0].name}`));
+        })//.then(presence => console.log(`Activity set to ${presence.activities[0].type}: ${presence.activities[0].name}`));
         // setInterval(gpLoop, 10000);
 
         if (!fs.existsSync('./settings.json')) {

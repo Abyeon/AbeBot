@@ -1,10 +1,10 @@
 const fs = require('fs');
-const Discord = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const { prefix, token } = require('./config.json');
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
-client.cooldowns = new Discord.Collection();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });
+client.commands = new Collection();
+client.cooldowns = new Collection();
 
 /* Register Commands */
 const commandFolders = fs.readdirSync('./commands');
@@ -14,6 +14,7 @@ for (const folder of commandFolders) {
     for (const file of commandFiles) {
         const command = require(`./commands/${folder}/${file}`);
         client.commands.set(command.name, command);
+        console.log(`Registered command \"${command.name}\"`)
     }
 }
 
@@ -27,6 +28,7 @@ for (const file of eventFiles) {
     } else {
         client.on(event.name, (...args) => event.execute(...args, client));
     }
+    console.log(`Registered event \"${event.name}\"`);
 }
 
 /* Login */

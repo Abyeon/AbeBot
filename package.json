@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Abyeon/AbeBot#readme",
   "dependencies": {
-    "discord.js": "^12.5.3",
-    "node-fetch": "^2.6.1"
+    "discord.js": "^13.6.0",
+    "node-fetch": "^2.6.7"
   }
 }

@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const { prefix, token, owner } = require('../config.json');
 
 module.exports = {
-    name: 'message',
+    name: 'messageCreate',
     execute(message, client) {
-        //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
+        console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
         const settings = require('../settings.json');
         let serverPrefix = prefix;
 
