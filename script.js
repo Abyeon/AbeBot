@@ -1,8 +1,9 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { prefix, token } = require('./config.json');
+const { error } = require('console');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.DIRECT_MESSAGES] });
 client.commands = new Collection();
 client.cooldowns = new Collection();
 
@@ -23,10 +24,17 @@ const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'
 
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
+
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args, client));
     } else {
-        client.on(event.name, (...args) => event.execute(...args, client));
+        client.on(event.name, (...args) => {
+            try {
+                event.execute(...args, client)
+            } catch (err) {
+                console.error(err); // Professional error handling!
+            }
+        });
     }
     console.log(`Registered event \"${event.name}\"`);
 }

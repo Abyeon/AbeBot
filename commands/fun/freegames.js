@@ -25,7 +25,7 @@ module.exports = {
                     list += `\n${json[i].worth} [${json[i].title}](${json[i].open_giveaway})`;
                 }
                 embed.setDescription(list);
-                message.channel.send(embed);
+                message.channel.send({embeds: [embed] });
             });
 
     }

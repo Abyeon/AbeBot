@@ -4,12 +4,12 @@ const { prefix, token, owner } = require('../config.json');
 module.exports = {
     name: 'messageCreate',
     execute(message, client) {
-        console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
+        //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
         const settings = require('../settings.json');
         let serverPrefix = prefix;
 
         // Check to see if in DM, if not, then use default prefix (do nothing)
-        if (message.channel.type !== "dm") {
+        if (message.channel.type !== "DM") {
             settings.guilds.forEach((g) => {
                 if (!message.author.bot && g.id == message.channel.guild.id) {
                     serverPrefix = g.prefix;
