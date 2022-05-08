@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix, token, owner } = require('../config.json');
+const { prefix, owner } = require('../config.json');
 
 module.exports = {
     name: 'messageCreate',

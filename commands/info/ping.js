@@ -9,7 +9,7 @@ module.exports = {
                 setTimeout(function() {
                     let ms = msg.createdTimestamp - message.createdTimestamp;
                     msg.edit("Pong! `" + ms + "ms`");
-                }, 100)
+                }, 100);
             });
     }
 }

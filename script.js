@@ -1,9 +1,17 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { prefix, token } = require('./config.json');
-const { error } = require('console');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.DIRECT_MESSAGES] });
+/* Set-up Gateway Intents */
+const botIntents = new Intents();
+botIntents.add(Intents.FLAGS.GUILDS);
+botIntents.add(Intents.FLAGS.GUILD_BANS);
+botIntents.add(Intents.FLAGS.GUILD_MESSAGES);
+botIntents.add(Intents.FLAGS.GUILD_MEMBERS);
+botIntents.add(Intents.FLAGS.GUILD_PRESENCES);
+botIntents.add(Intents.FLAGS.DIRECT_MESSAGES);
+
+const client = new Client({ intents: botIntents });
 client.commands = new Collection();
 client.cooldowns = new Collection();
 
