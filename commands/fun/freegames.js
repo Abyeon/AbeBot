@@ -7,7 +7,7 @@ const platforms = ["pc", "steam", "epic-games-store", "ubisoft", "gog", "itchio"
 
 module.exports = {
     name: 'freegames',
-    description: 'Responds with a list of current free games for the chosen platform',
+    description: 'Responds with a list of current free games for the chosen platform\nPossible platforms:\n\`pc, steam, epic-games-store, ubisoft, gog, itchio, ps4, ps5, xbox-one, xbox-series-xs, switch, android, ios, vr, battlenet, origin, drm-free, xbox-360\`',
     aliases: ['free'],
     usage: '(platform)',
     cooldown: 2,
@@ -15,38 +15,51 @@ module.exports = {
     execute (message, args) {
         let chosenPlatform = ((args.length > 0) ? args[0].toLowerCase() : "pc");
 
-        let matchingPlatforms = []
+        // Find possible wanted platforms from user input
+        let matchingPlatforms = [];
         platforms.forEach(platform => {
             if (platform.indexOf(chosenPlatform) == 0) matchingPlatforms.push(platform);
         });
 
-        // User input had too many possible platforms. STOP!
-        if (matchingPlatforms.length > 1 || matchingPlatforms.length == 0) {
+        // If no matching platforms, return.
+        if (matchingPlatforms.length == 0) {
             message.reply("Possible platforms to search:\n\`pc, steam, epic-games-store, ubisoft, gog, itchio, ps4, ps5, xbox-one, xbox-series-xs, switch, android, ios, vr, battlenet, origin, drm-free, xbox-360\`");
             return;
-        } else {
-            chosenPlatform = matchingPlatforms[0];
         }
+
+        // Join all matching platforms and prepare for GET request
+        chosenPlatform = matchingPlatforms.join('.');
 
         let list = "";
         const embed = new MessageEmbed()
             .setColor(message.guild.me.displayHexColor)
             .setTimestamp()
 
-        let url = `https://www.gamerpower.com/api/giveaways?type=game&platform=${chosenPlatform}&sort-by=value`;
+        let url = `https://www.gamerpower.com/api/filter?platform=${chosenPlatform}&type=game&sort-by=value`;
 
         fetch(url, settings)
             .then(res => res.json())
             .then((json) => {
                 for (var i = 0; i < 20 && i < json.length; i++) {
-                    list += `\n${json[i].worth} [${json[i].title}](${json[i].open_giveaway})`;
+                    // Check if returned json includes a platform from our chosen platforms.
+                    let gpPlatforms = json[i].platforms.split(', ');
+                    let addToList = gpPlatforms.map(gpPlatform => {
+                        if (matchingPlatforms.includes(gpPlatform)) {
+                            return true;
+                        }
+                    })
+
+                    // Add it to the returned embed.
+                    if (addToList) {
+                        list += `\n${json[i].worth} [${json[i].title}](${json[i].open_giveaway})`;
+                    }
                 }
 
                 if (json.length == undefined) {
                     embed.setTitle("ERROR!");
                     embed.setDescription(json.status_message);
                 } else {
-                    embed.setTitle(`Top ${(20 > json.length) ? json.length : 20} Current Free Games For ${chosenPlatform.toUpperCase()}`)
+                    embed.setTitle(`Top ${(20 > json.length) ? json.length : 20} Current Free Games For ${matchingPlatforms.join(' ').toUpperCase()}`)
                     embed.setDescription(list);
                 }
                 
