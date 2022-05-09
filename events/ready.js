@@ -10,11 +10,10 @@ module.exports = {
         console.log(`Logged in as ${client.user.tag}!`);
         client.user.setPresence({
             status: 'available',
-            activity: {
+            activities: [{
                 name: `${prefix}help`,
-                type: "STREAMING",
-                url: "https://github.com/Abyeon/AbeBot"
-            }
+                type: "PLAYING"
+            }]
         });
 
         if (!fs.existsSync('./settings.json')) {
