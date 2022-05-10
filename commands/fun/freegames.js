@@ -30,9 +30,17 @@ module.exports = {
         // Join all matching platforms and prepare for GET request
         chosenPlatform = matchingPlatforms.join('.');
 
+        // Set hex color for embed
+        let hexColor = "#FFFFFF";
+        if (message.guild) {
+            if (message.guild.me.displayHexColor != "#000000") {
+                hexColor = message.guild.me.displayHexColor;
+            }
+        }
+
         let list = "";
         const embed = new MessageEmbed()
-            .setColor(message.guild.me.displayHexColor)
+            .setColor(hexColor)
             .setTimestamp()
 
         let url = `https://www.gamerpower.com/api/filter?platform=${chosenPlatform}&type=game&sort-by=value`;

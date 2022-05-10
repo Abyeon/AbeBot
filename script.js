@@ -14,6 +14,7 @@ botIntents.add(Intents.FLAGS.DIRECT_MESSAGES);
 const client = new Client({ intents: botIntents });
 client.commands = new Collection();
 client.cooldowns = new Collection();
+client.db = require("quick.db");
 
 /* Register Commands */
 const commandFolders = fs.readdirSync('./commands');
@@ -46,6 +47,11 @@ for (const file of eventFiles) {
     }
     console.log(`Registered event \"${event.name}\"`);
 }
+
+/* Add Log Events */
+
+client.on("error", console.error);
+client.on("warn", console.warn);
 
 /* Login */
 client.login(token);
