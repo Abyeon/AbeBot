@@ -99,16 +99,23 @@ module.exports = {
 
 function xp (message, client) {
     let userId = message.author.id;
+    //console.log(`${message.author.tag} USER ID: ${userId}`);
     
     // Get guild data from database, or if it doesnt exist, create it.
-    let guildInfo = client.db.get(`guild_${message.guildId}`) || client.db.set(`guild_${message.guildId}`, { users: [], settings: {} });
+    let guildInfo;
+    if (client.db.has(`guild_${message.guildId}`)) {
+        guildInfo = client.db.get(`guild_${message.guildId}`)
+    } else {
+        console.log("MADE NEW THING");
+        guildInfo = client.db.set(`guild_${message.guildId}`, { users: [], settings: {} });
+    }
 
     // Find user from guild data, or if they dont exist, add them.
     let users = guildInfo.users;
     let userInfo = users.find(user => user.id == userId)
 
     // If user has no info yet, generate it
-    if (!userInfo) {
+    if (userInfo === undefined) {
         userInfo = {id: userId, xp: 0, level: 1};
     }
 
@@ -119,10 +126,6 @@ function xp (message, client) {
     let cur_level = userInfo.level;
     let new_level = Math.ceil(0.4 * Math.sqrt(userInfo.xp));
 
-    // Calculate needed xp
-    //console.log(cur_level + " " + userInfo.xp);
-    //let neededXP = Math.floor(Math.pow(0.4 * cur_level + 1) - userInfo.xp);
-
     // User leveled up, yay!
     if (new_level > cur_level) {
         userInfo.level = new_level;
@@ -130,8 +133,16 @@ function xp (message, client) {
     }
 
     // Now apply all this back to the DB
-    users.splice(users.indexOf(user => user.id == userId), 1);
-    users.push(userInfo);
+    // users.splice(users.findIndex(user => user.id == userId), 1);
+    // users.push(userInfo);
+
+    let userIndex = users.findIndex(user => user.id == userId);
+    if (userIndex == -1) {
+        users.push(userInfo);
+    } else {
+        users[userIndex] = userInfo;
+    }
+
     guildInfo.users = users;
     client.db.set(`guild_${message.guildId}`, guildInfo);
 }
