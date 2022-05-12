@@ -7,16 +7,6 @@ module.exports = {
     execute(message, client) {
         const { cooldowns } = client;
 
-        if (!message.author.bot) {
-            if (!message.guild) {
-                console.log(`DIRECT MESSAGE/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
-            } else {
-                console.log(`${message.guild.name}/#${message.channel.name}/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
-                
-                // Handle leveling stuff
-                xp(message, client);
-            }
-        }
         //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
         let serverPrefix = prefix;
 
@@ -27,9 +17,21 @@ module.exports = {
                     serverPrefix = g.prefix;
                 }
             });
-        }        
+        }
 
-        if (!message.content.startsWith(serverPrefix) || message.author.bot) return;
+        if (message.author.bot) return;
+
+        if (!message.guild) {
+            console.log(`DIRECT MESSAGE/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
+        } else {
+            console.log(`${message.guild.name}/#${message.channel.name}/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
+        }
+
+        if (!message.content.startsWith(serverPrefix)) {
+            // Handle leveling stuff
+            xp(message, client);
+            return;
+        }
 
         const args = message.content.slice(serverPrefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();

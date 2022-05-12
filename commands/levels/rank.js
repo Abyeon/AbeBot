@@ -8,7 +8,17 @@ module.exports = {
     execute(message, args, client) {
         let guildInfo = client.db.get(`guild_${message.guildId}`);
         let users = guildInfo.users.sort((a, b) => { return b.xp - a.xp });
-        let userInfo = guildInfo.users.find(user => user.id == message.author.id);
+
+        let mentionedUser = (message.mentions.members.size > 0) ? message.mentions.members.first() : message.member;
+        console.log(mentionedUser);
+
+        let userInfo = guildInfo.users.find(user => user.id == mentionedUser.id);
+
+        if (!userInfo) {
+            message.reply("User doesn't have a rank yet or is a bot.");
+            return;
+        }
+
         let neededXP = Math.ceil(Math.pow((userInfo.level) / 0.4, 2));
 
         let rank = users.findIndex(e => e.id == userInfo.id) + 1;
@@ -21,15 +31,15 @@ module.exports = {
             }
         }
 
-        let image = message.author.displayAvatarURL();
+        let image = mentionedUser.displayAvatarURL();
 
         console.log(image);
 
         const embed = new MessageEmbed()
             .setColor(hexColor)
-            .setAuthor({name: `${message.member.displayName}'s Rank Card:`})
-            .setDescription(`Rank #${rank} / Level ${userInfo.level}\n\n[ XP : ${userInfo.xp} / ${neededXP} ]`)
-            .setThumbnail(message.author.displayAvatarURL())
+            .setAuthor({name: `${mentionedUser.displayName} is level ${userInfo.level}!`})
+            .setDescription(`Rank **#${rank}** out of **${users.length}** members.\n\n[ XP : **${userInfo.xp}** / ${neededXP} ]`)
+            .setThumbnail(mentionedUser.displayAvatarURL())
         
         message.reply({embeds: [embed], allowedMentions: { parse: [] } });
     }
