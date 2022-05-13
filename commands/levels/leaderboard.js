@@ -6,9 +6,17 @@ module.exports = {
     description: "Displays a leaderboard of the server",
     cooldown: 2,
 
-    execute(message, args, client) {
-        let guildInfo = client.db.get(`guild_${message.guildId}`);
-        let users = guildInfo.users.sort((a, b) => { return b.xp - a.xp });
+    async execute(message, args, client) {
+        let guildData;
+
+        if (client.db.hasGuild(message.guildId)) {
+            guildData = client.db.getGuildById(message.guildId);
+        } else {
+            guildData = await client.db.addGuild(message.guildId);
+        }
+
+        let users = guildData.users;
+        users.sort((a, b) => { return b.xp - a.xp });
         let userIds = users.map(user => user.id);
 
         // Set hex color for embed
@@ -26,11 +34,11 @@ module.exports = {
         message.guild.members.fetch({ user: userIds }).then(guildMembers => {
             let list = "";
 
-            let index = 0;
-            users.forEach(user => {
-                index++;
-                list += `**${index}.** <@${guildMembers.find(e => e.id == user.id).user.id}> -- level ${user.level} xp ${user.xp}\n`;
-            });
+            for (let index = 0; index < 10 && index < users.length; index++) {
+                const user = users[index];
+                console.log(user);
+                list += `**${index + 1}.** <@${guildMembers.find(e => e.id == user.id).user.id}> -- level ${user.level} xp ${user.xp}\n`;
+            }
 
             embed.setDescription(list);
             message.reply({embeds: [embed], allowedMentions: { parse: [] } });

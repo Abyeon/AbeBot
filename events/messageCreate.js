@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { prefix, owner } = require('../config.json');
 const settings = require('../settings.json');
+const { Database, GuildData, UserData } = require('../utils/database-interface');
 
 module.exports = {
     name: 'messageCreate',
@@ -99,52 +100,30 @@ module.exports = {
     }
 }
 
-function xp (message, client) {
+async function xp (message, client) {
     let userId = message.author.id;
-    //console.log(`${message.author.tag} USER ID: ${userId}`);
-    
-    // Get guild data from database, or if it doesnt exist, create it.
-    let guildInfo;
-    if (client.db.has(`guild_${message.guildId}`)) {
-        guildInfo = client.db.get(`guild_${message.guildId}`)
-    } else {
-        console.log("MADE NEW THING");
-        guildInfo = client.db.set(`guild_${message.guildId}`, { users: [], settings: {} });
-    }
+    let guildData = await client.db.addGuild(message.guildId);
 
     // Find user from guild data, or if they dont exist, add them.
-    let users = guildInfo.users;
-    let userInfo = users.find(user => user.id == userId)
+    let user;
 
-    // If user has no info yet, generate it
-    if (userInfo === undefined) {
-        userInfo = {id: userId, xp: 0, level: 1};
+    if (guildData.hasUser(userId)) {
+        user = guildData.getUserById(userId);
+    } else {
+        user = guildData.addUser(userId);
     }
 
-    // Add one xp to user.
-    userInfo.xp += 1;
+    user.addXp(1);
 
     // Calculate new level from added xp.
-    let cur_level = userInfo.level;
-    let new_level = Math.ceil(0.4 * Math.sqrt(userInfo.xp));
+    let cur_level = user.level;
+    let new_level = Math.ceil(0.4 * Math.sqrt(user.xp));
 
     // User leveled up, yay!
     if (new_level > cur_level) {
-        userInfo.level = new_level;
+        user.level = new_level;
         message.channel.send(`${message.author.toString()}, You just advanced to level ${new_level}!`);
     }
 
-    // Now apply all this back to the DB
-    // users.splice(users.findIndex(user => user.id == userId), 1);
-    // users.push(userInfo);
-
-    let userIndex = users.findIndex(user => user.id == userId);
-    if (userIndex == -1) {
-        users.push(userInfo);
-    } else {
-        users[userIndex] = userInfo;
-    }
-
-    guildInfo.users = users;
-    client.db.set(`guild_${message.guildId}`, guildInfo);
+    await guildData.save();
 }

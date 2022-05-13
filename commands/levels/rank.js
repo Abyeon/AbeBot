@@ -1,18 +1,20 @@
 const { MessageEmbed } = require('discord.js');
+const { Database, UserData, GuildData } = require('../../utils/database-interface.js')
 
 module.exports = {
     name: "rank",
     description: "Tells the user their level in the server.",
+    usage: "(mention)",
     cooldown: 2,
 
     execute(message, args, client) {
-        let guildInfo = client.db.get(`guild_${message.guildId}`);
-        let users = guildInfo.users.sort((a, b) => { return b.xp - a.xp });
-
+        let guildData = client.db.getGuildById(message.guild.id);
+        console.log(guildData);
         let mentionedUser = (message.mentions.members.size > 0) ? message.mentions.members.first() : message.member;
-        console.log(mentionedUser);
 
-        let userInfo = guildInfo.users.find(user => user.id == mentionedUser.id);
+        //let userInfo = guildInfo.users.find(user => user.id == mentionedUser.id);
+        let userInfo = guildData.getUserById(mentionedUser.id);
+        let users = guildData.users;
 
         if (!userInfo) {
             message.reply("User doesn't have a rank yet or is a bot.");
@@ -32,8 +34,6 @@ module.exports = {
         }
 
         let image = mentionedUser.displayAvatarURL();
-
-        console.log(image);
 
         const embed = new MessageEmbed()
             .setColor(hexColor)

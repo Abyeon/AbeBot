@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { prefix, token } = require('./config.json');
+const { Database } = require('./utils/database-interface');
 
 /* Set-up Gateway Intents */
 const botIntents = new Intents();
@@ -14,7 +15,7 @@ botIntents.add(Intents.FLAGS.DIRECT_MESSAGES);
 const client = new Client({ intents: botIntents });
 client.commands = new Collection();
 client.cooldowns = new Collection();
-client.db = require("quick.db");
+client.db = new Database();
 
 /* Register Commands */
 const commandFolders = fs.readdirSync('./commands');
