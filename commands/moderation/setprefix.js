@@ -9,32 +9,22 @@ module.exports = {
     permissions: 'MANAGE_GUILD',
     usage: '[new prefix]',
 
-    execute(message, args) {
-        let settings = require('../../settings.json');
-        let currPrefix = '';
-        let temp = {id: message.channel.guild.id, prefix: args[0]}
-
-        let index = -1;
-        settings.guilds.forEach((g, i) => {
-            if (g.id == message.channel.guild.id) {
-                index = i;
-            }
-        });
-
-        if (index > -1) {
-            currPrefix = settings.guilds[index].prefix;
-            settings.guilds[index].prefix = args[0];
-        } else {
-            currPrefix = config.prefix;
-            settings.guilds.push(temp);
+    async execute(message, args, client) {
+        // Check if a prefix was provided
+        if (args.length == 0) {
+            message.reply('Please provide a prefix!');
+            return;
         }
 
-        fs.writeFile('./settings.json', JSON.stringify(settings), err => {
-            if (err) {
-                console.log(err);
-            } else {
-                message.reply(`Set this server's prefix from \`${currPrefix}\` to \`${args[0]}\``);
-            }
-        });
+        // Reference the current guild settings
+        let guildData = await client.db.addGuild(message.guildId);
+        let currentPrefix = guildData.settings.prefix;
+
+        // Set the new prefix
+        guildData.settings.prefix = args[0];
+        await guildData.save();
+
+        // Finally confirm with a reply
+        message.reply(`Set this server's prefix from \`${currentPrefix}\` to \`${args[0]}\``);
     }
 }

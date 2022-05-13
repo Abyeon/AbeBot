@@ -5,19 +5,23 @@ const { Database, GuildData, UserData } = require('../utils/database-interface')
 
 module.exports = {
     name: 'messageCreate',
-    execute(message, client) {
+    async execute(message, client) {
         const { cooldowns } = client;
 
         //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
         let serverPrefix = prefix;
+        let guildData;
 
         // Check to see if in DM, if not, then use default prefix (do nothing)
         if (message.channel.type !== "DM") {
-            settings.guilds.forEach((g) => {
-                if (!message.author.bot && g.id == message.channel.guild.id) {
-                    serverPrefix = g.prefix;
-                }
-            });
+            // settings.guilds.forEach((g) => {
+            //     if (!message.author.bot && g.id == message.channel.guild.id) {
+            //         serverPrefix = g.prefix;
+            //     }
+            // });
+
+            guildData = await client.db.addGuild(message.guildId);
+            serverPrefix = guildData.settings.prefix;
         }
 
         if (message.author.bot) return;
@@ -28,9 +32,9 @@ module.exports = {
             console.log(`${message.guild.name}/#${message.channel.name}/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
         }
 
-        if (!message.content.startsWith(serverPrefix)) {
+        if (!message.content.startsWith(serverPrefix) && message.channel.type !== "DM") {
             // Handle leveling stuff
-            xp(message, client);
+            xp(message, guildData, client);
             return;
         }
 
@@ -100,9 +104,8 @@ module.exports = {
     }
 }
 
-async function xp (message, client) {
+async function xp (message, guildData, client) {
     let userId = message.author.id;
-    let guildData = await client.db.addGuild(message.guildId);
 
     // Find user from guild data, or if they dont exist, add them.
     let user;

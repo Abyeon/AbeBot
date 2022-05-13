@@ -1,7 +1,8 @@
 const db = require('quick.db');
+const defaultSettings = require('../config.json');
 
 class GuildData {
-    constructor(id, users = [], settings = {}) {
+    constructor(id, users = [], settings = new SettingsData()) {
         this.id = id;
         this.users = users.map(user => {
             return new UserData(user.id, user.xp, user.level);
@@ -36,6 +37,29 @@ class GuildData {
         data.settings = this.settings;
 
         await db.set(`guild_${this.id}`, data);
+    }
+}
+
+class SettingsData {
+    constructor(prefix = defaultSettings.prefix, modules = []) {
+        this.prefix = prefix;
+        this.modules = modules;
+    }
+
+    hasModule(module) {
+        return this.modules.includes(module);
+    }
+
+    addModule(module) {
+        if (this.hasModule(module)) return;
+        return this.modules.push(module);
+    }
+
+    delModule(module) {
+        if (this.hasModule(module)) {
+            let index = this.modules.indexOf(module);
+            return this.modules.splice(index, 1);
+        }
     }
 }
 
@@ -91,8 +115,13 @@ class Database {
         }
         
         // If guild doesnt exist, create it.
-        db.set(`guild_${id}`, { users: [], settings: {} });
         guild = new GuildData(id);
+
+        data = { users: [], settings: {} };
+        data.users = guild.users;
+        data.settings = guild.settings;
+
+        db.set(`guild_${id}`, data);
         this.guilds.push(guild);
 
         return guild;
