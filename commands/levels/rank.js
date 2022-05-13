@@ -16,10 +16,7 @@ module.exports = {
             guildData = await client.db.addGuild(message.guildId);
         }
 
-        console.log(guildData);
         let mentionedUser = (message.mentions.members.size > 0) ? message.mentions.members.first() : message.member;
-
-        //let userInfo = guildInfo.users.find(user => user.id == mentionedUser.id);
         let userInfo = guildData.getUserById(mentionedUser.id);
         let users = guildData.users;
 
