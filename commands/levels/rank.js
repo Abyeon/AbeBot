@@ -7,8 +7,15 @@ module.exports = {
     usage: "(mention)",
     cooldown: 2,
 
-    execute(message, args, client) {
-        let guildData = client.db.getGuildById(message.guild.id);
+    async execute(message, args, client) {
+        let guildData;
+
+        if (client.db.hasGuild(message.guildId)) {
+            guildData = client.db.getGuildById(message.guildId);
+        } else {
+            guildData = await client.db.addGuild(message.guildId);
+        }
+
         console.log(guildData);
         let mentionedUser = (message.mentions.members.size > 0) ? message.mentions.members.first() : message.member;
 
