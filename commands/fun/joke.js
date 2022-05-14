@@ -4,8 +4,7 @@ const fetch = require('node-fetch');
 const categories = ['any', 'misc', 'programming', 'dark', 'pun', 'spooky', 'christmas']
 
 module.exports = {
-    name: "randomjoke",
-    aliases: ['joke'],
+    name: "joke",
     description: "Tells you a joke!\nPossible categories: \`Any, Misc, Programming, Dark, Pun, Spooky, Christmas\`",
     usage: "(category)",
     cooldown: 2,

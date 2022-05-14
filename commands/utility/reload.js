@@ -22,6 +22,7 @@ module.exports = {
 
         try {
             const newCommand = require(`../${folderName}/${command.name}.js`);
+            newCommand.module = folderName;
             message.client.commands.set(newCommand.name, newCommand);
             message.channel.send(`Command \`${newCommand.name}\` was reloaded!`);
         } catch (err) {

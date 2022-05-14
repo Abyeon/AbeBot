@@ -7,7 +7,8 @@ const platforms = ["pc", "steam", "epic-games-store", "ubisoft", "gog", "itchio"
 
 module.exports = {
     name: 'freegames',
-    description: 'Responds with a list of current free games for the chosen platform\nPossible platforms:\n\`pc, steam, epic-games-store, ubisoft, gog, itchio, ps4, ps5, xbox-one, xbox-series-xs, switch, android, ios, vr, battlenet, origin, drm-free, xbox-360\`',
+    description: 'Responds with a list of current free games for the chosen platform',
+    acceptedArguments: 'pc, steam, epic-games-store, ubisoft, gog, itchio, ps4, ps5, xbox-one, xbox-series-xs, switch, android, ios, vr, battlenet, origin, drm-free, xbox-360',
     aliases: ['free'],
     usage: '(platform)',
     cooldown: 2,

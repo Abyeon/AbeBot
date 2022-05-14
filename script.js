@@ -24,6 +24,7 @@ for (const folder of commandFolders) {
     const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./commands/${folder}/${file}`);
+        command.module = folder;
         client.commands.set(command.name, command);
         console.log(`Registered command \"${command.name}\"`)
     }
@@ -48,11 +49,6 @@ for (const file of eventFiles) {
     }
     console.log(`Registered event \"${event.name}\"`);
 }
-
-/* Add Log Events */
-
-client.on("error", console.error);
-client.on("warn", console.warn);
 
 /* Login */
 client.login(token);

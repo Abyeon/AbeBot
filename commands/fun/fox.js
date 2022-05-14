@@ -2,24 +2,23 @@ const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
 module.exports = {
-    name: "randomcat",
-    aliases: ['cat'],
-    description: "Sends a picture of a random cat",
+    name: "fox",
+    description: "Sends a picture of a random fox",
     cooldown: 2,
 
     execute(message, args) {
-        let url = "https://api.thecatapi.com/v1/images/search";
+        let url = "https://randomfox.ca/floof/";
         let settings = { method: "GET" };
 
         const embed = new MessageEmbed()
             .setColor(message.guild.me.displayHexColor)
-            .setTitle("A random cat appears!")
+            .setTitle("A random fox appears!")
             .setTimestamp();
 
         fetch(url, settings)
             .then(res => res.json())
             .then((json) => {
-                embed.setImage(json[0].url);
+                embed.setImage(json.image);
                 message.channel.send({embeds: [embed]});
             });
     }
