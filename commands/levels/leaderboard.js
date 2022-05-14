@@ -7,17 +7,12 @@ module.exports = {
     cooldown: 2,
 
     async execute(message, args, client) {
-        let guildData;
+        // Pull the guild's data from the DB
+        let guildData = await client.db.addGuild(message.guildId);
 
-        if (client.db.hasGuild(message.guildId)) {
-            guildData = client.db.getGuildById(message.guildId);
-        } else {
-            guildData = await client.db.addGuild(message.guildId);
-        }
-
+        // Reference and sort the users in descending order by XP
         let users = guildData.users;
         users.sort((a, b) => { return b.xp - a.xp });
-        let userIds = users.map(user => user.id);
 
         // Set hex color for embed
         let hexColor = "#FFFFFF";
@@ -27,10 +22,13 @@ module.exports = {
             }
         }
 
+        // Initiate the embed
         const embed = new MessageEmbed()
             .setColor(hexColor)
             .setTitle(`Leaderboard For ${message.guild.name}:`)
-
+        
+        // Build the rest of the embed
+        let userIds = users.map(user => user.id);
         message.guild.members.fetch({ user: userIds }).then(guildMembers => {
             let list = "";
 
