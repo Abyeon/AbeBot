@@ -5,6 +5,7 @@ module.exports = {
     name: "rank",
     description: "Tells the user their level in the server.",
     usage: "(mention)",
+    guildOnly: true,
     cooldown: 2,
 
     async execute(message, args, client) {

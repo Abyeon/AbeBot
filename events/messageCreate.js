@@ -34,7 +34,10 @@ module.exports = {
 
         if (!message.content.startsWith(serverPrefix) && message.channel.type !== "DM") {
             // Handle leveling stuff
-            xp(message, guildData, client);
+            if (!guildData.settings.modules.includes("levels")) {
+                xp(message, guildData, client);
+            }
+
             return;
         }
 
@@ -44,6 +47,9 @@ module.exports = {
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) return; // If the command does not exist, return.
+
+        // If the command is in a disabled module, return.
+        if (guildData.settings.modules.includes(command.module)) return;
 
         // If command is debug and message author is not the owner, return.
         if (command.debug) {

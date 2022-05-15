@@ -10,8 +10,16 @@ module.exports = {
         let url = "https://randomfox.ca/floof/";
         let settings = { method: "GET" };
 
+        // Set hex color for embed
+        let hexColor = "#FFFFFF";
+        if (message.guild) {
+            if (message.guild.me.displayHexColor != "#000000") {
+                hexColor = message.guild.me.displayHexColor;
+            }
+        }
+
         const embed = new MessageEmbed()
-            .setColor(message.guild.me.displayHexColor)
+            .setColor(hexColor)
             .setTitle("A random fox appears!")
             .setTimestamp();
 

@@ -26,7 +26,11 @@ module.exports = {
             // Jank way of getting array of modules without duplicates
             let modules = commands.map(command => command.module);
             modules = [...new Set(modules)];
-            console.log(modules);
+
+            // Filter out any disabled modules
+            modules = modules.filter(module => {
+                return !guildData.settings.modules.includes(module);
+            });
 
             // Initialize embed
             const embed = new MessageEmbed()

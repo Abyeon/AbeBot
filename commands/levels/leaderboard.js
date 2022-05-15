@@ -4,6 +4,7 @@ module.exports = {
     name: "leaderboard",
     aliases: ['ranks'],
     description: "Displays a leaderboard of the server",
+    guildOnly: true,
     cooldown: 2,
 
     async execute(message, args, client) {
