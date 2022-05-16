@@ -8,7 +8,6 @@ module.exports = {
     async execute(message, client) {
         const { cooldowns } = client;
 
-        //console.log(`${message.guild.name}/#${message.channel.name}/@${message.member.user.username}#${message.member.user.discriminator}: ${message.content}`); // TODO: Make logger
         let serverPrefix = prefix;
         let guildData;
 
@@ -26,6 +25,7 @@ module.exports = {
 
         if (message.author.bot) return;
 
+        // TODO: Make logger
         if (!message.guild) {
             console.log(`DIRECT MESSAGE/@${message.author.username}#${message.author.discriminator}: ${message.content}`);
         } else {
