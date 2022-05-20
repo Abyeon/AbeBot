@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const { prefix, owner } = require('../config.json');
-const settings = require('../settings.json');
 const { Database, GuildData, UserData } = require('../utils/database-interface');
 
 module.exports = {
