@@ -12,12 +12,6 @@ module.exports = {
 
         // Check to see if in DM, if not, then use default prefix (do nothing)
         if (message.channel.type !== "DM") {
-            // settings.guilds.forEach((g) => {
-            //     if (!message.author.bot && g.id == message.channel.guild.id) {
-            //         serverPrefix = g.prefix;
-            //     }
-            // });
-
             guildData = await client.db.addGuild(message.guildId);
             serverPrefix = guildData.settings.prefix;
         }
