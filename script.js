@@ -1,7 +1,8 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { prefix, token } = require('./config.json');
+const { prefix, token, xivkey } = require('./config.json');
 const { Database } = require('./utils/database-interface');
+const XIVAPI = require('@xivapi/js');
 
 /* Set-up Gateway Intents */
 const botIntents = new Intents();
@@ -16,6 +17,9 @@ const client = new Client({ intents: botIntents });
 client.commands = new Collection();
 client.cooldowns = new Collection();
 client.db = new Database();
+client.xiv = new XIVAPI({
+    private_key: xivkey
+});
 
 /* Register Commands */
 const commandFolders = fs.readdirSync('./commands');
