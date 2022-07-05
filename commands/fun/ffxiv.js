@@ -28,7 +28,23 @@ module.exports = {
 
         try {
             let response = await xiv.character.get(args[0]);
+            console.log(response);
+
+            // If we recieve an error from the API
+            if (response.Error) {
+                message.reply(response.Message);
+                console.log(response.Message);
+                return;
+            }
+
             let character = response.Character;
+
+            // Check if character exists (I dont think we should ever get here)
+            if (!character) {
+                message.reply("Character does not exist, or something went horribly wrong!");
+                return;
+            }
+
             let classjob = await xiv.data.list("ClassJob", {ids: [character.ActiveClassJob.JobID]});
             let classicon = classjob.Results[0].Icon;
 
