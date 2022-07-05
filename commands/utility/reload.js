@@ -9,7 +9,13 @@ module.exports = {
 
     execute (message, args) {
         const commandName = args[0].toLowerCase();
-        const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases.includes(commandName));
+
+        // Find the command to reload
+        const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => {
+            if (cmd.aliases) {
+                return cmd.aliases.includes(commandName)
+            }
+        });
 
         if (!command) {
             return message.channel.send(`There is no command with the name \`${commandName}\``);
