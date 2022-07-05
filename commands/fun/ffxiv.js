@@ -67,27 +67,33 @@ module.exports = {
                 switch (character.GrandCompany.NameID) {
                     case (1):
                         grandCompany = "Maelstrom";
+
                         if (character.Gender = 1) {
                             grandCompanyRank = await xiv.data.get("GCRankLimsaMaleText", character.GrandCompany.RankID);
                         } else {
                             grandCompanyRank = await xiv.data.get("GCRankLimsaFemaleText", character.GrandCompany.RankID);
                         }
+
                         break;
                     case (2):
-                        grandcompany = "Order of the Twin Adder";
+                        grandCompany = "Order of the Twin Adder";
+
                         if (character.Gender = 1) {
                             grandCompanyRank = await xiv.data.get("GCRankGridaniaMaleText", character.GrandCompany.RankID);
                         } else {
                             grandCompanyRank = await xiv.data.get("GCRankGridaniaFemaleText", character.GrandCompany.RankID);
                         }
+
                         break;
                     case (3):
                         grandCompany = "Immortal Flames";
+                        
                         if (character.Gender = 1) {
                             grandCompanyRank = await xiv.data.get("GCRankUldahMaleText", character.GrandCompany.RankID);
                         } else {
                             grandCompanyRank = await xiv.data.get("GCRankUldahFemaleText", character.GrandCompany.RankID);
                         }
+
                         break;
                     default:
                         break;
