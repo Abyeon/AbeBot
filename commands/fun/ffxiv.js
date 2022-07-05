@@ -28,8 +28,7 @@ module.exports = {
 
         try {
             let response = await xiv.character.get(args[0]);
-            console.log(response);
-
+            
             // If we recieve an error from the API
             if (response.Error) {
                 message.reply(response.Message);
