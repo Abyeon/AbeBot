@@ -8,7 +8,7 @@ module.exports = {
     description: 'Accesses the XIV API',
     aliases: ['finalfantasy', 'xiv'],
     usage: '(character id)',
-    cooldown: 2,
+    cooldown: 5,
     
     async execute (message, args, client) {
         // Get access to the xiv client
@@ -27,7 +27,8 @@ module.exports = {
             .setColor(hexColor)
 
         try {
-            let response = await xiv.character.get(args[0]);
+            // Request Character data
+            let response = await xiv.character.get(args[0], {data: ['MIMO']});
             
             // If we recieve an error from the API
             if (response.Error) {
@@ -54,12 +55,14 @@ module.exports = {
             embed.setImage(character.Portrait);
             embed.setDescription(`**Server:** ${character.DC} ${character.Server}`);
 
+            // Show player's Free Company
             if (character.FreeCompanyName) {
                 embed.addField("Free Company", character.FreeCompanyName);
             }
 
-            // If character is a part of a grand company, show their rank.
+            // If player is a part of a grand company, show their rank.
             if (character.GrandCompany) {
+
                 let grandCompany = "";
                 let grandCompanyRank;
 
@@ -100,6 +103,37 @@ module.exports = {
                 }
 
                 embed.addField(grandCompany, grandCompanyRank.Name);
+            }
+
+            /* LONG-WINDED WAY OF FINDING TOTAL ITEM LEVEL */
+
+            let gearIDs = [];
+            Object.values(character.GearSet.Gear).forEach(item => {
+                gearIDs.push(item.ID);
+            });
+
+            let gearData = [];
+
+            for await (const ID of gearIDs) {
+                let item = await xiv.data.get("item", ID);
+                gearData.push(item);
+            }
+
+            let totalItemLevel = 0;
+            gearData.forEach(item => {
+                totalItemLevel += item.LevelItem;
+            });
+
+            embed.addField("Item Level", totalItemLevel.toString(), true);
+
+            // Show how many mounts player has
+            if (response.Mounts) {
+                embed.addField("Mounts", response.Mounts.length.toString(), true);
+            }
+            
+            // Show how many minions player has
+            if (response.Minions) {
+                embed.addField("Minions", response.Minions.length.toString(), true);
             }
 
             message.channel.send({embeds: [embed] });
