@@ -55,6 +55,11 @@ module.exports = {
             embed.setImage(character.Portrait);
             embed.setDescription(`**Server:** ${character.DC} ${character.Server}`);
 
+            embed.setFooter({text: "Last Parsed"})
+
+            let parseDate = new Date(character.ParseDate*1000);
+            embed.setTimestamp(parseDate);
+
             // Show player's Free Company
             if (character.FreeCompanyName) {
                 embed.addField("Free Company", character.FreeCompanyName);
