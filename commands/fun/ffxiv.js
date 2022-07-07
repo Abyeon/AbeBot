@@ -110,7 +110,7 @@ module.exports = {
                 embed.addField(grandCompany, grandCompanyRank.Name);
             }
 
-            /* LONG-WINDED WAY OF FINDING TOTAL ITEM LEVEL */
+            /* LONG-WINDED WAY OF FINDING AVERAGE GEAR SCORE */
 
             let gearIDs = [];
             Object.values(character.GearSet.Gear).forEach(item => {
@@ -129,7 +129,9 @@ module.exports = {
                 totalItemLevel += item.LevelItem;
             });
 
-            embed.addField("Item Level", totalItemLevel.toString(), true);
+            let averageItemLevel = Math.floor(totalItemLevel / gearData.length);
+
+            embed.addField("Gear Score", averageItemLevel.toString(), true);
 
             // Show how many mounts player has
             if (response.Mounts) {
