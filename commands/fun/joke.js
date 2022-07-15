@@ -7,6 +7,7 @@ module.exports = {
     name: "joke",
     description: "Tells you a joke!\nPossible categories: \`Any, Misc, Programming, Dark, Pun, Spooky, Christmas\`",
     usage: "(category)",
+    sendTyping: true,
     cooldown: 2,
 
     execute(message, args) {

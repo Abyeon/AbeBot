@@ -11,6 +11,7 @@ module.exports = {
     acceptedArguments: 'pc, steam, epic-games-store, ubisoft, gog, itchio, ps4, ps5, xbox-one, xbox-series-xs, switch, android, ios, vr, battlenet, origin, drm-free, xbox-360',
     aliases: ['free', 'games'],
     usage: '(platform)',
+    sendTyping: true,
     cooldown: 2,
     
     execute (message, args) {

@@ -8,6 +8,7 @@ module.exports = {
     description: 'Accesses the XIV API',
     aliases: ['finalfantasy', 'xiv'],
     usage: '(character id)',
+    sendTyping: true,
     cooldown: 5,
     
     async execute (message, args, client) {

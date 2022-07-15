@@ -95,6 +95,7 @@ module.exports = {
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         try {
+            if (command.sendTyping) message.channel.sendTyping();
             command.execute(message, args, client);
         } catch (err) {
             console.error(err);

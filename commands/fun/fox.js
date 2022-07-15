@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 module.exports = {
     name: "fox",
     description: "Sends a picture of a random fox",
+    sendTyping: true,
     cooldown: 2,
 
     execute(message, args) {
