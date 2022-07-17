@@ -1,5 +1,6 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { Database, UserData, GuildData } = require('../../utils/database-interface.js')
+const Canvas = require('canvas');
 
 module.exports = {
     name: "rank",
@@ -34,6 +35,31 @@ module.exports = {
             }
         }
 
+        /* FIGURE THIS OUT LATER
+        // Build the image!
+        const canvas = Canvas.createCanvas(700, 250);
+        const context = canvas.getContext('2d');
+
+        const Weight = '900';
+        const Style = 'heavy';
+        const FontFamily = 'Uni Sans';
+        const FontSize = 60;
+
+        context.font = '60px "Uni Sans"'
+        context.fillStyle = '#ffffff';
+        context.fillText(mentionedUser.displayName, canvas.width / 2.5, canvas.height / 1.8);
+
+        const avatar = await Canvas.loadImage(mentionedUser.displayAvatarURL({ format: 'png' }));
+
+        context.beginPath();
+        context.arc(125, 125, 100, 0, Math.PI * 2, true);
+        context.closePath();
+        context.clip();
+
+        context.drawImage(avatar, 25, 25, 200, 200);
+        */
+
+        
         // Build the embed
         const embed = new MessageEmbed()
             .setColor(hexColor)
@@ -43,5 +69,9 @@ module.exports = {
         
         // Send the embed
         message.reply({embeds: [embed], allowedMentions: { parse: [] } });
+        
+
+        //const attachment = new MessageAttachment(canvas.toBuffer('image/png'), 'level.png');
+        //message.reply({ files: [attachment] });
     }
 }
