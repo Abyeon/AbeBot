@@ -20,11 +20,6 @@ module.exports = {
             return;
         }
 
-        // Couldnt find any matches
-        if (user === null) {
-            
-        }
-
         let url = `https://api.betterttv.net/3/cached/users/twitch/${user.id}`;
 
         let settings = { method: "GET" };
