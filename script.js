@@ -57,9 +57,7 @@ for (const file of eventFiles) {
 
 /* Connect to Twitch */
 const twitch = new Twitch(twitchId, twitchSecret);
-twitch.validate().then(() => {
-    console.log("Logged into twitch");
-})
+twitch.validate();
 
 client.twitch = twitch;
 
