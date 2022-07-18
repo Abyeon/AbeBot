@@ -3,4 +3,6 @@
     "token":"your-token-here",
     "owner":"bot-owner-id",
     "xivkey":"xivapi.com-api-key"
+    "twitchId":"twitch-id-goes-here",
+    "twitchSecret":"twitch-secret-goes-here"
 }
