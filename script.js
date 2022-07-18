@@ -1,8 +1,9 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { prefix, token, xivkey } = require('./config.json');
+const { prefix, token, xivkey, twitchId, twitchSecret } = require('./config.json');
 const { Database } = require('./utils/database-interface');
 const XIVAPI = require('@xivapi/js');
+const { Twitch } = require('./utils/twitch-interface');
 
 /* Set-up Gateway Intents */
 const botIntents = new Intents();
@@ -53,6 +54,12 @@ for (const file of eventFiles) {
     }
     console.log(`Registered event \"${event.name}\"`);
 }
+
+/* Connect to Twitch */
+const twitch = new Twitch(twitchId, twitchSecret);
+twitch.validate();
+
+client.twitch = twitch;
 
 /* Login */
 client.login(token);
