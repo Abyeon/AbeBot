@@ -12,7 +12,7 @@ class Twitch {
     }
 
     /* Get a Twitch channels ID by Username. */
-    getTwitchChannelID(username) {
+    getTwitchChannelByName(username) {
         let url = `https://api.twitch.tv/helix/search/channels?query=${username}&first=1`;
 
         let settings = {
@@ -64,6 +64,8 @@ class Twitch {
                     this.auth();
                     return;
                 }
+
+                console.log(`Twitch token is still valid. ${(json.expires_in / 60).toFixed(2)} minutes remaining.`);
                 
                 this.expires = json.expires_in;
             })
@@ -94,7 +96,7 @@ class Twitch {
                 this.expires = json.expires_in;
                 this.tokenTimestamp = Date.now();
 
-                console.log("Logged into twitch.");
+                console.log("Authenticated with twitch.");
 
                 // Re-auth after token expires
                 setInterval(this.validate, 3600000)
