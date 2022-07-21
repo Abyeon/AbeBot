@@ -12,15 +12,17 @@ module.exports = {
 
     async execute(message, args, client) {
         let username = args[0].toLowerCase();
-        let user;
         
+        /* Fetch twitch user data */
+        let user;
         try {
-            user = await client.twitch.getTwitchChannelByName(username);
+            user = await client.twitch.getChannelByName(username);
         } catch(e) {
             message.reply("Something went wrong")
             return;
         }
 
+        // Fetch emote data
         let bttvURL = `https://api.betterttv.net/3/cached/users/twitch/${user.id}`;
         let ffzURL = `https://api.betterttv.net/3/cached/frankerfacez/users/twitch/${user.id}`;
 
@@ -37,10 +39,10 @@ module.exports = {
             }
         }
 
-        // Build the embed
+        /* --- Build the embed --- */
         const embed = new MessageEmbed()
             .setColor(hexColor)
-            .setAuthor({name: (user.is_live ? 'Currently Live' : 'Not Live')})
+            .setDescription((user.is_live ? 'Currently Live' : 'Not Live'))
             .setTitle(user.display_name)
             .setURL(`https://twitch.tv/${user.broadcaster_login}`)
             .setThumbnail(user.thumbnail_url)
@@ -53,9 +55,19 @@ module.exports = {
         // Get the time the stream started as a unix timestamp
         let liveSince = Math.floor(new Date(user.started_at).getTime() / 1000);
 
-        if (user.is_live) embed.addField("Went live", `<t:${liveSince}:R>`)
+        if (user.is_live) {
+            embed.addField("Went live", `<t:${liveSince}:R>`)
+        } else {
+            try {
+                let lastVod = await client.twitch.getChannelVods(user.id, 1, "time", "archive").then(data => data[0]);
 
-        console.log()
+                let lastLive = Math.floor((new Date(lastVod.created_at).getTime() + lastVod.duration_ms) / 1000);
+
+                embed.addField("Latest Vod", `[<t:${lastLive}:R>](${lastVod.url})`);
+            } catch (e) {
+                console.log(e);
+            }
+        }
 
         // Emotes
         if (bttv.sharedEmotes)
