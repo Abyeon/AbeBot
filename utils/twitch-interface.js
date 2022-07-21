@@ -11,8 +11,55 @@ class Twitch {
         this.tokenTimestamp;
     }
 
-    /* Get a Twitch channels ID by Username. */
-    getTwitchChannelByName(username) {
+    /* Get a channel's Vods */
+    getChannelVods(id, limit = 0, sort = "time", type = "all") {
+        let url = `https://api.twitch.tv/helix/videos?user_id=${id}&sort=${sort}&type=${type}`;
+        if (limit > 0) url += `&first=${limit}`;
+
+        console.log(url);
+
+        let settings = {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${this.token}`,
+                'Client-Id': this.id
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            fetch(url, settings)
+                .then(res => res.json())
+                .then((json) => {
+                    if (json.status == 401) {
+                        // Unauthorized. Auth.
+                        this.auth();
+                        reject("Twitch token is invalid.");
+                    }
+
+                    if (json.data.length == 0) {
+                        return reject("No vods found.");
+                    }
+        
+                    json.data.forEach(vod => {
+                        // Convert duration string to milliseconds
+                        let duration = vod.duration;
+                        let days = duration.substring(0, duration.indexOf('d'));
+                        let hours = duration.substring(duration.indexOf('d') == -1 ? 0 : duration.indexOf('d') + 1, duration.indexOf('h'));
+                        let minutes = duration.substring(duration.indexOf('h') == -1 ? 0 : duration.indexOf('h') + 1, duration.indexOf('m'));
+                        let seconds = duration.substring(duration.indexOf('m') == -1 ? 0 : duration.indexOf('m') + 1, duration.indexOf('s'));
+
+                        // Avert your eyes
+                        let final = (days * 86400000) + (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
+                        vod.duration_ms = final; // Store for convenience sake
+                    });
+
+                    return resolve(json.data);
+                });
+        });
+    }
+
+    /* Get a channel's ID by Username. */
+    getChannelByName(username) {
         let url = `https://api.twitch.tv/helix/search/channels?query=${username}&first=1`;
 
         let settings = {
@@ -25,21 +72,21 @@ class Twitch {
 
         return new Promise((resolve, reject) => {
             fetch(url, settings)
-            .then(res => res.json())
-            .then((json) => {
-                if (json.status == 401) {
-                    // Unauthorized. Auth.
-                    this.auth();
-                    reject("Twitch token is invalid.");
-                }
+                .then(res => res.json())
+                .then((json) => {
+                    if (json.status == 401) {
+                        // Unauthorized. Auth.
+                        this.auth();
+                        reject("Twitch token is invalid.");
+                    }
 
-                if (json.data.length > 0) {
-                    let user = json.data[0];
-                    resolve(user);
-                } else {
-                    reject("Couldnt find any matches for that twitch name.");
-                }
-            }); 
+                    if (json.data.length > 0) {
+                        let user = json.data[0];
+                        resolve(user);
+                    } else {
+                        reject("Couldnt find any matches for that twitch name.");
+                    }
+                }); 
         })
     }
 
