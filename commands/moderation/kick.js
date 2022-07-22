@@ -7,14 +7,18 @@ module.exports = {
     usage: '[user] (reason..)',
 
     execute (message, args) {
-        let user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0]);
-        if (!user) return message.channel.send('Not a valid user!');
-
-        if (user.hasPermission('KICK_MEMBERS')) return message.channel.send('Invalid permissions.');
-
-        let kickReason = args.slice(1).join(" ");
-        if (!kickReason) kickReason = "None";
-
-        user.kick({reason: kickReason})
+        let member = await message.guild.members.fetch(message.mentions.users.first().id);
+        if (member) {
+            try {
+                let reason = args[1] ? args[1] : "No reason specified.";
+                member.kick({reason: reason});
+                message.reply(`Kicked ${member.displayName} for \`\`${reason}\`\``);
+            } catch (e) {
+                console.log(e);
+                message.reply("I do not have permissions to kick that user.");
+            }
+        } else {
+            message.reply("No members mentioned.");
+        }
     }
 }
