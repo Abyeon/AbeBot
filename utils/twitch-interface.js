@@ -11,6 +11,44 @@ class Twitch {
         this.tokenTimestamp;
     }
 
+    /* Get a channel's ID by Username. */
+    getChannelByName(username) {
+        let url = `https://api.twitch.tv/helix/search/channels?query=${username}&first=1`;
+
+        let settings = {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${this.token}`,
+                'Client-Id': this.id,
+                'Ratelimit': 'Limit',
+                'Ratelimit': 'Remaining'
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            fetch(url, settings)
+                .then(async (res) => {
+                    let json = await res.json();
+
+                    // TODO: Avoid passing ratelimit. (800 requests per minute)
+                    // This limit shouldnt be passed any time soon, though.
+
+                    if (json.status == 401) {
+                        // Unauthorized. Auth.
+                        this.auth();
+                        reject("Twitch token is invalid.");
+                    }
+
+                    if (json.data.length > 0) {
+                        let user = json.data[0];
+                        resolve(user);
+                    } else {
+                        reject("Couldnt find any matches for that twitch name.");
+                    }
+                }); 
+        })
+    }
+
     /* Get a channel's Vods */
     getChannelVods(id, limit = 0, sort = "time", type = "all") {
         let url = `https://api.twitch.tv/helix/videos?user_id=${id}&sort=${sort}&type=${type}`;
@@ -58,9 +96,9 @@ class Twitch {
         });
     }
 
-    /* Get a channel's ID by Username. */
-    getChannelByName(username) {
-        let url = `https://api.twitch.tv/helix/search/channels?query=${username}&first=1`;
+    /* Get stream by channel ID */
+    getStreamByID (id) {
+        let url = `https://api.twitch.tv/helix/streams?user_id=${id}&first=1`;
 
         let settings = {
             method: "GET",
@@ -80,14 +118,13 @@ class Twitch {
                         reject("Twitch token is invalid.");
                     }
 
-                    if (json.data.length > 0) {
-                        let user = json.data[0];
-                        resolve(user);
-                    } else {
-                        reject("Couldnt find any matches for that twitch name.");
+                    if (json.data.length == 0) {
+                        return reject("No streams found.");
                     }
-                }); 
-        })
+
+                    return resolve(json.data[0]);
+                })
+        });
     }
 
     /* Validate the access token */
