@@ -6,7 +6,7 @@ module.exports = {
     permissions: 'KICK_MEMBERS',
     usage: '[user] (reason..)',
 
-    execute (message, args) {
+    async execute (message, args) {
         let member = await message.guild.members.fetch(message.mentions.users.first().id);
         if (member) {
             try {
