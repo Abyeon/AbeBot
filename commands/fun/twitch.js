@@ -42,22 +42,41 @@ module.exports = {
         /* --- Build the embed --- */
         const embed = new MessageEmbed()
             .setColor(hexColor)
-            .setDescription((user.is_live ? 'Currently Live' : 'Not Live'))
             .setTitle(user.display_name)
             .setURL(`https://twitch.tv/${user.broadcaster_login}`)
             .setThumbnail(user.thumbnail_url)
 
     
         // Stream info
-        if (user.title != "") embed.addField("Stream Title", user.title);
-        if (user.game_name != "") embed.addField("Playing", user.game_name);
+        if (user.title != "") embed.addField("Stream Title", `\`\`\`${user.title}\`\`\``);
+        if (user.game_name != "") embed.addField("Playing", user.game_name, user.is_live);
 
         // Get the time the stream started as a unix timestamp
         let liveSince = Math.floor(new Date(user.started_at).getTime() / 1000);
 
         if (user.is_live) {
-            embed.addField("Went live", `<t:${liveSince}:R>`)
+            try {
+                let stream = await client.twitch.getStreamByID(user.id);
+                if (stream.viewer_count > 0) {
+                    embed.addField("Viewers", stream.viewer_count.toString(), true);
+                }
+
+                if (stream.thumbnail_url) {
+                    let imageURL = stream.thumbnail_url;
+                    imageURL = imageURL.replace("{width}", "1920");
+                    imageURL = imageURL.replace("{height}", "1080");
+
+                    embed.setImage(imageURL);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+            embed.addField("Went live", `<t:${liveSince}:R>`);
+
         } else {
+            embed.setDescription("Not Live");
+
             try {
                 let lastVod = await client.twitch.getChannelVods(user.id, 1, "time", "archive").then(data => data[0]);
 
